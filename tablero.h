@@ -1,12 +1,10 @@
 #ifndef TABLERO_H
 #define TABLERO_H
 
-// Cada ficha ocupa 3 bits dentro del tablero
-// 000 = A, 001 = B, 010 = C, 011 = D, 100 = E, 101 = F
-// 110 = casilla vacia
-// 111 = no se usa por ahora
+// cada ficha usa 3 bits: A=0, B=1, C=2, D=3, E=4, F=5
+// el 6 es casilla vacia y el 7 no se usa todavia
 const unsigned char FICHA_VACIA = 6;
-const unsigned char MASCARA_FICHA = 7;   // 0000 0111
+const unsigned char MASCARA_FICHA = 7;
 const int TIPOS_FICHA = 6;
 
 int calcularBytes(int filas, int columnas);
@@ -21,4 +19,4 @@ void mostrarFichas(unsigned char* tablero, int filas, int columnas);
 void mostrarBinario(unsigned char* tablero, int filas, int columnas);
 void mostrarMemoria(unsigned char* tablero, int filas, int columnas);
 
-#endif // TABLERO_H
+#endif
