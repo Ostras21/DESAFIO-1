@@ -2,51 +2,84 @@
 #include <cstdlib>
 #include <ctime>
 #include "tablero.h"
+#include "juego.h"
 
 using namespace std;
+
+// pide un numero hasta que el usuario escriba uno dentro del rango
+int leerEntero(int minimo, int maximo)
+{
+    int valor = minimo - 1;
+
+    do {
+        cin >> valor;
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            valor = minimo - 1;
+        }
+        if (valor < minimo || valor > maximo) {
+            cout << "Valor no valido, intente de nuevo: ";
+        }
+    } while (valor < minimo || valor > maximo);
+
+    return valor;
+}
 
 int main()
 {
     srand(time(0));
 
-    int filas = 0;
-    int columnas = 0;
-
     cout << "SWEET CRUSH" << endl << endl;
 
     // minimo 3 para que se puedan hacer combinaciones
-    do {
-        cout << "Numero de filas (3 a 30): ";
-        cin >> filas;
-        if (cin.fail()) {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            filas = 0;
-        }
-        if (filas < 3 || filas > 30) {
-            cout << "Valor no valido" << endl;
-        }
-    } while (filas < 3 || filas > 30);
+    cout << "Numero de filas (3 a 30): ";
+    int filas = leerEntero(3, 30);
 
-    do {
-        cout << "Numero de columnas (3 a 30): ";
-        cin >> columnas;
-        if (cin.fail()) {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            columnas = 0;
-        }
-        if (columnas < 3 || columnas > 30) {
-            cout << "Valor no valido" << endl;
-        }
-    } while (columnas < 3 || columnas > 30);
+    cout << "Numero de columnas (3 a 30): ";
+    int columnas = leerEntero(3, 30);
 
     unsigned char* tablero = crearTablero(filas, columnas);
     llenarAleatorio(tablero, filas, columnas);
 
-    mostrarFichas(tablero, filas, columnas);
-    mostrarBinario(tablero, filas, columnas);
-    mostrarMemoria(tablero, filas, columnas);
+    int eliminaciones = 0;
+    int fichasEliminadas = 0;
+    int opcion = 0;
+
+    do {
+        mostrarFichas(tablero, filas, columnas);
+        mostrarBinario(tablero, filas, columnas);
+
+        cout << endl;
+        cout << "1. Eliminar una ficha" << endl;
+        cout << "2. Ver la memoria" << endl;
+        cout << "0. Salir" << endl;
+        cout << "Opcion: ";
+        opcion = leerEntero(0, 2);
+
+        if (opcion == 1) {
+            cout << "Fila (0 a " << filas - 1 << "): ";
+            int fila = leerEntero(0, filas - 1);
+
+            cout << "Columna (0 a " << columnas - 1 << "): ";
+            int columna = leerEntero(0, columnas - 1);
+
+            eliminarFicha(tablero, columnas, fila, columna);
+            bajarFichas(tablero, filas, columnas);
+            rellenarVacias(tablero, filas, columnas);
+
+            eliminaciones++;
+            fichasEliminadas++;
+
+            cout << endl << "Eliminaciones: " << eliminaciones
+                 << "   Fichas eliminadas: " << fichasEliminadas << endl;
+        }
+
+        if (opcion == 2) {
+            mostrarMemoria(tablero, filas, columnas);
+        }
+
+    } while (opcion != 0);
 
     delete[] tablero;
     tablero = nullptr;
