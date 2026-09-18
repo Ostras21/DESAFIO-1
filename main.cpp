@@ -3,6 +3,7 @@
 #include <ctime>
 #include "tablero.h"
 #include "juego.h"
+#include "estructura.h"
 
 using namespace std;
 
@@ -40,6 +41,7 @@ int main()
     int columnas = leerEntero(3, 30);
 
     unsigned char* tablero = crearTablero(filas, columnas);
+    int capacidad = calcularBytes(filas, columnas);
     llenarAleatorio(tablero, filas, columnas);
 
     int eliminaciones = 0;
@@ -63,11 +65,15 @@ int main()
 
         cout << endl;
         cout << "1. Eliminar una ficha" << endl;
-        cout << "2. Ver la memoria" << endl;
-        cout << "3. Ver estadisticas" << endl;
+        cout << "2. Agregar una fila" << endl;
+        cout << "3. Eliminar una fila" << endl;
+        cout << "4. Agregar una columna" << endl;
+        cout << "5. Eliminar una columna" << endl;
+        cout << "6. Ver la memoria" << endl;
+        cout << "7. Ver estadisticas" << endl;
         cout << "0. Salir" << endl;
         cout << "Opcion: ";
-        opcion = leerEntero(0, 3);
+        opcion = leerEntero(0, 7);
 
         if (opcion == 1) {
             cout << "Fila (0 a " << filas - 1 << "): ";
@@ -90,10 +96,63 @@ int main()
         }
 
         if (opcion == 2) {
-            mostrarMemoria(tablero, filas, columnas);
+            if (filas == 30) {
+                cout << "El tablero ya tiene el maximo de filas" << endl;
+            } else {
+                cout << "La fila nueva va en la posicion (0 a " << filas << "): ";
+                int posicion = leerEntero(0, filas);
+
+                agregarFila(tablero, filas, columnas, capacidad, posicion);
+                cascadas = procesarCascadas(tablero, filas, columnas,
+                                            combinaciones, fichasEliminadas, puntaje);
+            }
         }
 
         if (opcion == 3) {
+            if (filas == 3) {
+                cout << "No se puede, el tablero quedaria con menos de 3 filas" << endl;
+            } else {
+                cout << "Fila que se elimina (0 a " << filas - 1 << "): ";
+                int posicion = leerEntero(0, filas - 1);
+
+                eliminarFila(tablero, filas, columnas, capacidad, posicion);
+                cascadas = procesarCascadas(tablero, filas, columnas,
+                                            combinaciones, fichasEliminadas, puntaje);
+            }
+        }
+
+        if (opcion == 4) {
+            if (columnas == 30) {
+                cout << "El tablero ya tiene el maximo de columnas" << endl;
+            } else {
+                cout << "La columna nueva va en la posicion (0 a " << columnas << "): ";
+                int posicion = leerEntero(0, columnas);
+
+                agregarColumna(tablero, filas, columnas, capacidad, posicion);
+                cascadas = procesarCascadas(tablero, filas, columnas,
+                                            combinaciones, fichasEliminadas, puntaje);
+            }
+        }
+
+        if (opcion == 5) {
+            if (columnas == 3) {
+                cout << "No se puede, el tablero quedaria con menos de 3 columnas" << endl;
+            } else {
+                cout << "Columna que se elimina (0 a " << columnas - 1 << "): ";
+                int posicion = leerEntero(0, columnas - 1);
+
+                eliminarColumna(tablero, filas, columnas, capacidad, posicion);
+                cascadas = procesarCascadas(tablero, filas, columnas,
+                                            combinaciones, fichasEliminadas, puntaje);
+            }
+        }
+
+        if (opcion == 6) {
+            mostrarMemoria(tablero, filas, columnas);
+            cout << "Bytes reservados: " << capacidad << endl;
+        }
+
+        if (opcion == 7) {
             cout << endl;
             cout << "Tablero: " << filas << " x " << columnas << endl;
             cout << "Eliminaciones del usuario: " << eliminaciones << endl;
